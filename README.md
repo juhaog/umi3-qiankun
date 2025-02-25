@@ -1,0 +1,86 @@
+# umi3 + qiankun project
+
+## main--主应用
+
+此项目为动态加载子应用路由，菜单不通过routes配置（通过接口获取或者自定义）
+
+### 插件注册（config.ts）
+
+```javascript
+qiankun: {
+    master: {
+      // 注册子应用信息
+      // apps: [],
+    },
+  },
+```
+
+### 注册和挂载子应用（app.tsx）--- [umi官网查看具体配置](https://v3.umijs.org/zh-CN/plugins/plugin-qiankun)
+
+```js
+// 从接口中获取子应用配置，export 出的 qiankun 变量是一个 promise
+export const qiankun = fetch('/api/config')
+  .then((res) => {
+    return res.json();
+  })
+  .then(({ apps, routes }) => {
+    return Promise.resolve({
+      // 注册子应用信息
+      apps,
+      routes,
+      // 完整生命周期钩子请看 https://qiankun.umijs.org/zh/api/#registermicroapps-apps-lifecycles
+      lifeCycles: {
+        afterMount: (props: any) => {
+          console.log(props);
+        },
+      },
+      // 支持更多的其他配置，详细看这里 https://qiankun.umijs.org/zh/api/#start-opts
+    });
+  });
+// 判断会话是否过期
+export function render(oldRender: () => void) {
+  oldRender();
+}
+```
+
+## sub1--子应用
+
+### 插件注册（config.ts）
+
+```javascript
+export default {
+  qiankun: {
+    slave: {},
+  },
+};
+```
+
+### 配置运行时生命周期钩子
+
+```javascript
+export const qiankun = {
+  // 应用加载之前
+  async bootstrap(props: any) {
+    console.log('app1 bootstrap', props);
+  },
+  // 应用 render 之前触发
+  async mount(props: any) {
+    console.log('app1 mount', props);
+  },
+  // 应用卸载之后触发
+  async unmount(props: any) {
+    console.log('app1 unmount', props);
+  },
+};
+
+// 判断会话是否过期
+export function render(oldRender: () => void) {
+  oldRender();
+}
+```
+
+## 注意
+
+主应用跳转子应用要加指定的前缀，子应用跳转其它的子应用或者主应用不能使用umi的跳转，此处使用的是
+
+`window.history.pushState(null, '', '/home');`
