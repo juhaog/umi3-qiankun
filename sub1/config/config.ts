@@ -1,4 +1,5 @@
 import { defineConfig } from 'umi';
+const routerConfig = require('../src/routes');
 
 export default defineConfig({
   devtool: 'eval', // source-map eval
@@ -9,10 +10,6 @@ export default defineConfig({
   nodeModulesTransform: {
     type: 'none',
   },
-  routes: [
-    { path: '/', component: '@/pages/index' },
-    { path: '/first', component: '@/pages/first/index' },
-    { path: '/second', component: '@/pages/second/index' },
-  ],
+  routes: routerConfig,
   fastRefresh: {},
 });

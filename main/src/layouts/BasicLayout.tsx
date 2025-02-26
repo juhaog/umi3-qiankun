@@ -13,7 +13,7 @@ import { Breadcrumb, ConfigProvider, Layout, Menu, Switch } from 'antd';
 import zhCN from 'antd/lib/locale-provider/zh_CN';
 import React, { memo, useEffect, useMemo, useState } from 'react';
 import styles from './index.less';
-import { history } from 'umi';
+import { history, useModel } from 'umi';
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -33,6 +33,7 @@ const items1: MenuProps['items'] = ['1', '2', '3'].map((key) => ({
 }));
 
 const App: React.FC<BasicLayoutProps> = (props) => {
+  const { masterState } = useModel('@@qiankunStateForSlave');
   const { children, route } = props;
   const [menu, setMenu] = useState<any>({});
   const [mode, setMode] = useState<'vertical' | 'inline'>('inline');
@@ -106,7 +107,7 @@ const App: React.FC<BasicLayoutProps> = (props) => {
             style={{ padding: '24px 0' }}
           >
             <Sider theme='light' className="site-layout-background" width={200}>
-              <Switch onChange={changeMode} /> Change Mode
+              <Switch onChange={changeMode} /> Change Mode{JSON.stringify(masterState)}
               <Menu
                 mode={mode}
                 defaultSelectedKeys={['/home']}

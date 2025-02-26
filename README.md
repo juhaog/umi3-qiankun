@@ -79,8 +79,91 @@ export function render(oldRender: () => void) {
 }
 ```
 
+## 数据通讯
+
+### 主应用
+
+传递数据(app.tsx)
+
+```javascript
+import { useState } from "react";
+
+export const useQiankunStateForSlave = () => {
+  const [masterState, setMasterState] = useState({});
+
+  return {
+    masterState,
+    setMasterState,
+  };
+}
+```
+
+主应用使用
+
+```javascript
+import { useModel } from 'umi';
+
+const { Header, Content, Footer, Sider } = Layout;
+
+const index = () => {
+  const { masterState } = useModel('@@qiankunStateForSlave');
+
+  return (
+    <div>
+	{JSON.stringify(masterState)}
+    </div>
+  );
+};
+
+export default App;
+```
+
+### 子应用
+
+可在子应用加载时监听数据(app.tsx)
+
+```javascript
+  async mount(props: any) {
+    console.log('sub1 mount', props);
+    // const routerConfig = require('../src/routes');
+    // 可以在子应用加载时传参
+    // props?.setMasterState({
+    //   sub1Routes: routerConfig,
+    // });
+    // 监听主应用传递的参数变化
+    props?.onGlobalStateChange((state: any, prev: any) => {
+      // state: 变更后的状态; prev 变更前的状态
+      console.log('sub1 onGlobalStateChange', state, prev);
+    });
+  },
+```
+
+使用时
+
+```javascript
+import { useModel } from 'umi';
+
+export default () => {
+  const masterProps = useModel('@@qiankunStateFromMaster');
+  const handleSetState = () => {
+    masterProps.setMasterState({
+      ...masterProps.masterState,
+      name: 'sub1',
+      age: 18
+    })
+  }
+  return (
+    <div>
+      <Button onClick={handleSetState}>修改主应用数据</Button>
+    </div>
+  );
+}
+```
+
 ## 注意
 
 主应用跳转子应用要加指定的前缀，子应用跳转其它的子应用或者主应用不能使用umi的跳转，此处使用的是
 
 `window.history.pushState(null, '', '/home');`
+
+通过useModal使用时需要注意，主应用用的是qiankunStateForSlave，子应用用的是qiankunStateFromMaster
