@@ -167,3 +167,7 @@ export default () => {
 `window.history.pushState(null, '', '/home');`
 
 通过useModal使用时需要注意，主应用用的是qiankunStateForSlave，子应用用的是qiankunStateFromMaster
+
+问题：
+1. 跳转发布订阅模式
+2. 引用页面问题，跨应用问题

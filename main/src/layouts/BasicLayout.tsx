@@ -14,6 +14,7 @@ import zhCN from 'antd/lib/locale-provider/zh_CN';
 import React, { memo, useEffect, useMemo, useState } from 'react';
 import styles from './index.less';
 import { history, useModel } from 'umi';
+import { trackPageInfo } from '@/utils/tracker';
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -59,8 +60,18 @@ const App: React.FC<BasicLayoutProps> = (props) => {
     })
     .then(({ routes }) => {
       setMenu(routes);
+      trackPageInfo()
     });
   }, []);
+
+  useEffect(() => {
+    const unlisten = history.listen(({ pathname, search }) => {
+      console.log('location', pathname, search)
+    })
+    return () => {
+      unlisten()
+    }
+  }, [location.pathname])
 
   const items2 = useMemo(() => {
     return [{ ...menu }].map((item) => {

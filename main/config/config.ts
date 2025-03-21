@@ -3,12 +3,34 @@ import { defineConfig } from 'umi';
 export default defineConfig({
   devtool: 'eval', // source-map eval
   antd: {},
+  hash: true,
+  dva: {
+    immer: true,
+    hmr: true,
+  },
+  devServer: {
+    port: 8000,
+  },
+  proxy: {
+    'sub1': {
+      target: 'http://localhost:8001',
+      'changeOrigin': true,
+      'pathRewrite': { '^/sub1' : '' },
+    },
+  },
+  mock: {},
   qiankun: {
     master: {
       // 注册子应用信息
       // apps: [],
+      singular: false,
     },
   },
+  targets: {
+    ie: 10,
+    chrome: 46,
+  },
+  ignoreMomentLocale: true,
   nodeModulesTransform: {
     type: 'none',
   },
@@ -18,6 +40,10 @@ export default defineConfig({
       name: '首页',
       component: '../layouts/BasicLayout',
       routes: [
+        {
+          path: '/',
+          redirect: '/home',
+        },
         {
           path: '/home',
           name: '工作台',
@@ -31,5 +57,10 @@ export default defineConfig({
       ],
     },
   ],
-  fastRefresh: {},
+  lessLoader: {
+    javascriptEnabled: true,
+  },
+  fastRefresh: {
+    loading: '@/components/PageLoading',
+  },
 });
