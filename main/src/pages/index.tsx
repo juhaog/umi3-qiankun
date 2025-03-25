@@ -1,5 +1,7 @@
 import React from 'react';
 import styles from './index.less';
+import { Input } from 'antd';
+import { MicroApp, MicroAppWithMemoHistory } from 'umi';
 
 export default function IndexPage() {
 
@@ -46,6 +48,8 @@ export default function IndexPage() {
   return (
     <div>
       <h1 className={styles.title}>Page index</h1>
+      <Input />
+      <MicroAppWithMemoHistory name='sub1' url={'/'} />
     </div>
   );
 }

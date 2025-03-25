@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { qiankunConfig } from "./qiankun-config";
 
 export const useQiankunStateForSlave = () => {
   const [masterState, setMasterState] = useState({});
@@ -31,21 +32,23 @@ export const useQiankunStateForSlave = () => {
 // });
 export const qiankun = Promise.resolve({
   // 注册子应用信息
-  apps: [
-    {
-      name: 'sub1',
-      entry: '//localhost:8001',
-    },
-  ],
-  routes: [
-    {
-      name: 'sub1',
-      path: '/sub1',
-      microApp: 'sub1',
-    },
-  ],
+  apps: qiankunConfig.apps,
+  routes: qiankunConfig.routes,
+  // apps: [
+  //   {
+  //     name: 'sub1',
+  //     entry: '//localhost:8004',
+  //   },
+  // ],
+  // routes: [
+  //   {
+  //     name: 'sub1',
+  //     path: '/sub1',
+  //     microApp: 'sub1',
+  //   },
+  // ],
   // sandbox: true,
-  prefetch: 'all',
+  // prefetch: 'all',
   sandbox: { strictStyleIsolation: true },
   // 完整生命周期钩子请看 https://qiankun.umijs.org/zh/api/#registermicroapps-apps-lifecycles
   lifeCycles: {

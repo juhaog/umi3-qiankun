@@ -5,7 +5,10 @@ export default defineConfig({
   devtool: 'source-map', // 改为 source-map 以便更好地调试
   hash: true,
   antd: {},
-  publicPath: 'http://localhost:8001/',
+  devServer: {
+    port: 8004,
+  },
+  // publicPath: 'http://localhost:8004/',
   qiankun: {
     slave: {
       enable: true,
@@ -16,11 +19,11 @@ export default defineConfig({
     type: 'none',
   },
   routes: routerConfig,
-  fastRefresh: {
-    loading: '@/components/PageLoading',  // 可选，热更新时的加载组件
-  },
-  mfsu: {}, // 启用 MFSU 构建优化
-  webpack5: {}, // 使用 webpack 5
+  // fastRefresh: {
+  //   loading: '@/components/PageLoading',  // 可选，热更新时的加载组件
+  // },
+  // mfsu: {}, // 启用 MFSU 构建优化
+  // webpack5: {}, // 使用 webpack 5
   dynamicImport: {
     loading: '@/components/PageLoading',
   },

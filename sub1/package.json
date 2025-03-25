@@ -2,7 +2,7 @@
   "private": true,
   "name": "sub1",
   "scripts": {
-    "start": "cross-env NODE_OPTIONS=--openssl-legacy-provider SOCKET_SERVER=http://localhost:8001/ PORT=8001 umi dev",
+    "start": "cross-env NODE_OPTIONS=--openssl-legacy-provider umi dev",
     "build": "set NODE_OPTIONS=--openssl-legacy-provider && umi build",
     "postinstall": "umi generate tmp",
     "prettier": "prettier --write '**/*.{js,jsx,tsx,ts,less,md,json}'",

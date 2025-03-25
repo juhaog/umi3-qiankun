@@ -168,6 +168,9 @@ export default () => {
 
 通过useModal使用时需要注意，主应用用的是qiankunStateForSlave，子应用用的是qiankunStateFromMaster
 
+多页签缓存参考文章：[手把手带你在微前端(qiankun)中实现多页签功能(路由keepalive)](https://juejin.cn/post/7225862344483668026)
+
 问题：
+
 1. 跳转发布订阅模式
 2. 引用页面问题，跨应用问题

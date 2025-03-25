@@ -9,7 +9,7 @@ export default defineConfig({
     hmr: true,
   },
   devServer: {
-    port: 8000,
+    port: 8003,
   },
   proxy: {
     'sub1': {
@@ -23,7 +23,7 @@ export default defineConfig({
     master: {
       // 注册子应用信息
       // apps: [],
-      singular: false,
+      // singular: false,
     },
   },
   targets: {
@@ -54,13 +54,28 @@ export default defineConfig({
           name: '列表1',
           component: '@/pages/list1',
         },
+        // {
+        //   name: '子应用首页',
+        //   path: '/sub1/',
+        // },
+        // {
+        //   name: '子应用列表1',
+        //   path: '/sub1/first/',
+        // },
+        // {
+        //   name: '子应用列表2',
+        //   path: '/sub1/second/',
+        // },
       ],
     },
   ],
   lessLoader: {
     javascriptEnabled: true,
   },
-  fastRefresh: {
+  dynamicImport: {
     loading: '@/components/PageLoading',
-  },
+  }
+  // fastRefresh: {
+  //   loading: '@/components/PageLoading',
+  // },
 });
