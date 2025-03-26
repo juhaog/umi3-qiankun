@@ -170,6 +170,8 @@ export default () => {
 
 多页签缓存参考文章：[手把手带你在微前端(qiankun)中实现多页签功能(路由keepalive)](https://juejin.cn/post/7225862344483668026)
 
+无语了！！ **qiankun的多页签缓存的bug可以通过上面文章里面的方法处理，这里是通过降低qiankun的版本去处理，一定要在resolutions里面固定版本！！**
+
 问题：
 
 1. 跳转发布订阅模式
