@@ -1,16 +1,27 @@
 const Routes = [
   {
     path: '/',
-    component: '@/pages/index',
+    component: '@/layouts/BasicLayout',
+    routes: [
+      {
+        path: '/',
+        component: '@/pages/index',
+      },
+      {
+        path: '/first',
+        component: '@/pages/first/index',
+      },
+      {
+        path: '/second',
+        component: '@/pages/second/index',
+      },
+      {
+        path: '/third/:id/:code',
+        component: '@/pages/third/index',
+      },
+    ],
   },
-  {
-    path: '/first',
-    component: '@/pages/first/index',
-  },
-  {
-    path: '/second',
-    component: '@/pages/second/index',
-  },
+  
 ];
 
 module.exports = Routes;

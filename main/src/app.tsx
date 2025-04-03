@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { qiankunConfig } from "./qiankun-config";
+import '@/utils/qiankun'
 
 export const useQiankunStateForSlave = () => {
   const [masterState, setMasterState] = useState({});

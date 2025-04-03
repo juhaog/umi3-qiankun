@@ -1,10 +1,11 @@
 import React, { useEffect } from 'react';
 import styles from './index.less';
 import { Modal } from 'antd';
-
-export default function List1(props: any) {
+import { useParams } from 'umi';
+export default function List2(props: any) {
+  const { id, code } = useParams<{ id: string, code: string }>();
   useEffect(() => {
-    console.log('props', props);
+    console.log('props', props, id, code);
   }, []);
   // useEffect(() => {
   //   const init = () => {
@@ -24,7 +25,7 @@ export default function List1(props: any) {
   // }, []);
   return (
     <div>
-      <h1 className={styles.title}>list1</h1>
+      <h1 className={styles.title}>list2</h1>
     </div>
   );
 }

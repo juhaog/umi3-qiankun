@@ -54,6 +54,11 @@ export default defineConfig({
           name: '列表1',
           component: '@/pages/list1',
         },
+        {
+          path: '/list2/:id/:code',
+          name: '列表2',
+          component: '@/pages/list2',
+        },
         // {
         //   name: '子应用首页',
         //   path: '/sub1/',

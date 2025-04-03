@@ -39,6 +39,14 @@ export default {
           path: '/sub1/second',
           name: '子页面2',
         },
+        {
+          path: '/list2/1/test',
+          name: '列表2',
+        },
+        {
+          path: '/sub1/third/1/test',
+          name: '子页面3',
+        },
       ],
     },
   },

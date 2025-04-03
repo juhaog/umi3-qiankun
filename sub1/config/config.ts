@@ -8,11 +8,14 @@ export default defineConfig({
   devServer: {
     port: 8004,
   },
-  // publicPath: 'http://localhost:8004/',
+  // publicPath: '/',
+  // base: '/',
   qiankun: {
     slave: {
       enable: true,
       devSourceMap: true,
+      // masterEntry: 'http://localhost:8004',  // 添加主应用入口
+      // shouldNotModifyRuntimePublicPath: true,
     },
   },
   nodeModulesTransform: {

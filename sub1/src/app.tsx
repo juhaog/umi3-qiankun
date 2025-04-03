@@ -1,13 +1,20 @@
 const routerConfig = require('../src/routes');
 let hasRegisteredRoutes = false;
+import '@/utils/qiankun'
+
 export const qiankun = {
   // 应用加载之前
   async bootstrap(props: any) {
+    // const token = window._QIANKUN_YD.store.get('token');
+    // console.log('这是从主应用中获取的token：', token);
     console.log('sub1 bootstrap', props);
   },
   // 应用 render 之前触发
   async mount(props: any) {
     console.log('sub1 mount', props, hasRegisteredRoutes);
+    const { mainHistory } = props;
+    // 可以将主应用的 history 存储到全局状态管理中
+    window.__MAIN_HISTORY__ = mainHistory;
     if (!hasRegisteredRoutes) {
       // 可以在子应用加载时传参
       props?.setMasterState({

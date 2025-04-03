@@ -1,3 +1,5 @@
+import { history } from 'umi'
+
 export const qiankunConfig = {
   apps: [{
     name: 'sub1',
@@ -8,6 +10,12 @@ export const qiankunConfig = {
       name: 'sub1',
       path: '/sub1',
       microApp: 'sub1',
+      microAppProps: {
+        autoSetLoading: true,
+        className: 'myContainer',
+        wrapperClassName: 'myWrapper',
+        mainHistory: history,
+      }
     },
   ],
 };

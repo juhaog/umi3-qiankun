@@ -16,6 +16,7 @@ import {
   Dropdown,
   Layout,
   Menu,
+  Modal,
   Switch,
   Tabs,
 } from 'antd';
@@ -107,10 +108,25 @@ const App: React.FC<BasicLayoutProps> = (props) => {
     onHidden,
     onShow,
   } = useKeepAliveTabs({menu, children});
-
+  const init = () => {
+    const ModalRef = Modal.info({
+      title: '加载中',
+      content: '加载中...',
+    });
+    setTimeout(() => {
+      ModalRef.destroy()
+    }, 3000);
+  }
   useEffect(() => {
     console.log('BasicLayout', children);
-  }, [children]);
+    // window._QIANKUN_YD.event.on('xxx')
+    // window._QIANKUN_YD.store.set('token', '我是一个token');
+    // 订阅loading事件
+    window._QIANKUN_YD.event.on('loading', init)
+    return () => {
+      window._QIANKUN_YD.event.off('loading', init)
+    }
+  }, []);
 
   useEffect(() => {
     fetch('/api/menu')
