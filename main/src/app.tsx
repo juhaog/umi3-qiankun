@@ -1,13 +1,52 @@
 import { useState } from "react";
 import { qiankunConfig } from "./qiankun-config";
 import '@/utils/qiankun'
+import actions from "./utils/actions";
+import { persistReducer, persistStore } from 'redux-persist';
+import storage from 'redux-persist/lib/storage/session';
+
+const persistConfig = {
+  key: 'root',
+  storage,
+  blacklist: [
+    // 'global',
+    // 'login'
+  ],
+};
+
+/**
+ * 引入redux-persist持久化
+ */
+const persistEnhancer = () => (createStore: any) => (reducer: any, initialState: any, enhancer: any) => {
+  const store = createStore(persistReducer(persistConfig, reducer), initialState, enhancer);
+  const persist = persistStore(store, null);
+  return {
+    ...store,
+    persist,
+  };
+};
+
+export const dva = {
+  config: {
+    extraEnhancers: [persistEnhancer()],
+    onError(err: any) {
+      err.preventDefault();
+    },
+  },
+};
 
 export const useQiankunStateForSlave = () => {
   const [masterState, setMasterState] = useState({});
 
+  const microSetMasterState = (state: any) => {
+    const allStates = Object.assign(masterState, state);
+    setMasterState(allStates);
+    actions.setGlobalState(allStates);
+  }
   return {
     masterState,
-    setMasterState,
+    // setMasterState,
+    microSetMasterState,
   };
 }
 
@@ -50,11 +89,15 @@ export const qiankun = Promise.resolve({
   // ],
   // sandbox: true,
   // prefetch: 'all',
-  sandbox: { strictStyleIsolation: true },
+  // sandbox: { strictStyleIsolation: true },
+  sandbox: false,
   // 完整生命周期钩子请看 https://qiankun.umijs.org/zh/api/#registermicroapps-apps-lifecycles
   lifeCycles: {
     afterMount: (props: any) => {
-      console.log(props);
+      console.log('afterMount主应用', props);
+    },
+    beforeUnmount: (props: any) => {
+      console.log('beforeUnmount主应用', props);
     },
   },
   // 支持更多的其他配置，详细看这里 https://qiankun.umijs.org/zh/api/#start-opts

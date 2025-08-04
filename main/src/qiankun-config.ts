@@ -4,6 +4,7 @@ export const qiankunConfig = {
   apps: [{
     name: 'sub1',
     entry: '//localhost:8004',
+    activeRule: '/sub1',
   }],
   routes: [
     {

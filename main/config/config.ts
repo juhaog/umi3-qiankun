@@ -1,4 +1,5 @@
 import { defineConfig } from 'umi';
+import slash from 'slash2';
 
 export default defineConfig({
   devtool: 'eval', // source-map eval
@@ -8,6 +9,7 @@ export default defineConfig({
     immer: true,
     hmr: true,
   },
+  esbuild: {},
   devServer: {
     port: 8003,
   },
@@ -31,6 +33,10 @@ export default defineConfig({
     chrome: 46,
   },
   ignoreMomentLocale: true,
+  locale: {
+    antd: false,
+    default: 'zh-CN',
+  },
   nodeModulesTransform: {
     type: 'none',
   },
@@ -77,10 +83,64 @@ export default defineConfig({
   lessLoader: {
     javascriptEnabled: true,
   },
+  cssLoader: {
+    modules: {
+      getLocalIdent: (context: { resourcePath: string; }, localIdentName: string, localName: string, options: any) => {
+        if (context.resourcePath.includes('node_modules') || context.resourcePath.includes('mixin.less')) {
+          return localName;
+        }
+        const match = context.resourcePath.match(/src(.*)/);
+        if (match && match[1]) {
+          const antdPath = match[1].replace('.less', '');
+          const arr = slash(antdPath).split('/').map((a: string) => a.replace(/^[A-Z]/g, '-$1')).map((a: string) => a.toLowerCase());
+          return `${arr.join('-')}-${localName}`.replace(/--/g, '-');
+        }
+        return localName;
+      },
+    },
+  },
+  chunks: ['vendors', 'umi'],
+  chainWebpack: function (config, { webpack }) {
+    config.merge({
+      optimization: {
+        minimize: true,
+        // 提取公共依赖,调整 splitChunks 策略，减少整体尺寸
+        splitChunks: {
+          chunks: 'all',
+          minSize: 30000,
+          minChunks: 1,
+          maxAsyncRequests: 30,
+          maxInitialRequests: 3,
+          automaticNameDelimiter: '.',
+          cacheGroups: {
+            vendor: {
+              chunks: 'all',
+              name: 'vendors',
+              test: /[\\/]node_modules[\\/]/,
+              // test({ resource }: { resource: string }) {
+              //   return /[\/]node_modules[\/]/.test(resource);
+              // },
+              priority: -10,
+            },
+            default: {
+              maxAsyncRequests: 30,
+              minChunks: 2,
+              priority: -20,
+              reuseExistingChunk: true,
+            },
+          },
+        },
+      },
+    });
+  },
   dynamicImport: {
     loading: '@/components/PageLoading',
-  }
+  },
   // fastRefresh: {
   //   loading: '@/components/PageLoading',
   // },
+  webpack5: {
+    // lazyCompilation: {},
+  },
+  // mfsu: {},
 });

@@ -1,10 +1,9 @@
-import _ from '@umijs/deps/compiled/lodash';
+import _ from 'lodash';
 
 export const getBreadcrumbNameMap = (menuList: any[], routes: any[]) => {
   const routeMap: { [key: string]: any } = {};
 
   const flattenMenuData = (data: any[]) => {
-    console.log('data', data);
     if (!data) return;
     data.forEach((menuItem) => {
       if (menuItem.children || menuItem.routes) {

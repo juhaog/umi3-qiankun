@@ -4,7 +4,8 @@ import {
 } from '@ant-design/pro-layout';
 import { ConfigProvider, Layout } from 'antd';
 import zhCN from 'antd/lib/locale-provider/zh_CN';
-import React, { memo, useEffect } from 'react';
+import React, { memo, useEffect, useState } from 'react';
+import history from '@/utils/history';
 const { Header, Content, Footer, Sider } = Layout;
 
 export interface BasicLayoutProps extends ProLayoutProps {
@@ -14,17 +15,35 @@ export interface BasicLayoutProps extends ProLayoutProps {
   settings: Settings;
 }
 
+interface LocationProps {
+  newLocation: typeof history.location;
+}
+
 const App: React.FC<BasicLayoutProps> = (props) => {
   const { children, route } = props;
-  useEffect(() => {
-    console.log('children', children);
-  }, [children]);
+  // const [location, setLocation] = useState(history.location);
+
+  // useEffect(() => {
+  //   return history.listen((location) => {
+  //     console.log('location', location, history.location);
+  //     // setLocation(location);
+  //   });
+  // }, []);
+
+  // const childrenWithProps = React.Children.map(children, (child) => {
+  //   if (React.isValidElement<LocationProps>(child)) {
+  //     return React.cloneElement(child, { newLocation: location });
+  //   }
+  //   return child;
+  // });
 
   return (
     <ConfigProvider locale={zhCN}>
-      <Layout>
+      {/* {childrenWithProps} */}
+      {children}
+      {/* <Layout>
         <Content>{children}</Content>
-      </Layout>
+      </Layout> */}
     </ConfigProvider>
   );
 };

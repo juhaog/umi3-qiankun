@@ -8,3 +8,8 @@ declare module '*.svg' {
   const url: string;
   export default url;
 }
+
+declare module 'slash2' {
+  function slash(path: string): string;
+  export = slash;
+}

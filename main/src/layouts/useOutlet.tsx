@@ -17,7 +17,8 @@ export function useOutlet(props: UseOutletProps) {
   // 如果没有匹配到子模块，就使用主模块的useOutlet
   const app = qiankunConfig.apps.find((app) => app.name === moduleName);
   if (!app) {
-    // if (!qiankunConfig.apps.some(app => app.name === moduleName)) {
+    console.log('children', children);
+  // if (!qiankunConfig.apps.some(app => app.name === moduleName)) {
     return children;
   }
 
@@ -27,7 +28,7 @@ export function useOutlet(props: UseOutletProps) {
   };
 
   const remainingPath = getRemainingPath(pathname);
-  console.log('appName', moduleName, remainingPath, pathname);
+  // console.log('appName', moduleName, remainingPath, pathname);
 
   return (
     <MicroAppWithMemoHistory
@@ -38,6 +39,7 @@ export function useOutlet(props: UseOutletProps) {
       className="myContainer"
       wrapperClassName="myWrapper"
       mainHistory={history}
+      autoDestroy={true}
     />
   );
 }

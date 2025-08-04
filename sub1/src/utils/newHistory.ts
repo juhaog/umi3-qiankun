@@ -80,7 +80,8 @@ class PrefixHistory {
 
 export const getHistory = () => {
   const baseHistory = window.__POWERED_BY_QIANKUN__ ? window.__MAIN_HISTORY__ : subHistory;
-  return new PrefixHistory(baseHistory);
+  return baseHistory;
+  // return new PrefixHistory(baseHistory);
 };
 
 const history = getHistory();

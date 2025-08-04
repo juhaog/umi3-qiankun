@@ -17,18 +17,21 @@ import {
   Layout,
   Menu,
   Modal,
+  Spin,
   Switch,
   Tabs,
 } from 'antd';
 import zhCN from 'antd/lib/locale-provider/zh_CN';
 import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import styles from './index.less';
-import { history, MicroAppWithMemoHistory, useLocation, useModel } from 'umi';
+import { History, history, MicroAppWithMemoHistory, useLocation, useModel } from 'umi';
 import { trackPageInfo } from '@/utils/tracker';
 import { KeepAliveTab, useKeepAliveTabs } from './useKeepAliveTabs';
 import { ItemType, MenuInfo } from 'rc-menu/lib/interface';
 import { getBreadcrumbNameMap } from '@/utils';
 import { KeepAliveTabContext } from './context';
+import TagsNav from './TagsNav';
+import _ from 'lodash';
 
 const { Header, Content, Footer, Sider } = Layout;
 const { TabPane } = Tabs;
@@ -41,6 +44,7 @@ export interface BasicLayoutProps extends ProLayoutProps {
     authority: string[];
   };
   settings: Settings;
+  location: History['location'];
 }
 
 const items1: MenuProps['items'] = ['1', '2', '3'].map((key) => ({
@@ -93,21 +97,23 @@ const findMenuItem = (routes?: any[], path?: string): any => {
 };
 
 const App: React.FC<BasicLayoutProps> = (props) => {
-  const { masterState } = useModel('@@qiankunStateForSlave');
-  const { children, route } = props;
+  const { masterState, microSetMasterState } = useModel('@@qiankunStateForSlave');
+  const { children, route, location } = props;
   const [menu, setMenu] = useState<any>({});
+  const [menuList, setMenuList] = useState<any>({});
+  const [breadcrumbNameMap, setBreadcrumbNameMap] = useState<any>({});
   const [mode, setMode] = useState<'vertical' | 'inline'>('inline');
   const { pathname } = useLocation();
-  const {
-    keepAliveTabs,
-    activeTabRoutePath,
-    breadcrumbNameMap,
-    closeTab,
-    refreshTab,
-    closeOtherTab,
-    onHidden,
-    onShow,
-  } = useKeepAliveTabs({menu, children});
+  // const {
+  //   keepAliveTabs,
+  //   activeTabRoutePath,
+  //   // breadcrumbNameMap,
+  //   closeTab,
+  //   refreshTab,
+  //   closeOtherTab,
+  //   onHidden,
+  //   onShow,
+  // } = useKeepAliveTabs({menu, children});
   const init = () => {
     const ModalRef = Modal.info({
       title: '加载中',
@@ -118,7 +124,7 @@ const App: React.FC<BasicLayoutProps> = (props) => {
     }, 3000);
   }
   useEffect(() => {
-    console.log('BasicLayout', children);
+    // console.log('BasicLayout', children);
     // window._QIANKUN_YD.event.on('xxx')
     // window._QIANKUN_YD.store.set('token', '我是一个token');
     // 订阅loading事件
@@ -129,6 +135,15 @@ const App: React.FC<BasicLayoutProps> = (props) => {
   }, []);
 
   useEffect(() => {
+    fetch('/api/menu2')
+      .then((res) => {
+        return res.json();
+      })
+      .then(({ menuList }) => {
+        setMenuList(menuList);
+        setBreadcrumbNameMap(getBreadcrumbNameMap(menuList, []));
+        // trackPageInfo();
+      });
     fetch('/api/menu')
       .then((res) => {
         return res.json();
@@ -139,92 +154,92 @@ const App: React.FC<BasicLayoutProps> = (props) => {
       });
   }, []);
 
-  const menuItems: MenuItemType[] = useMemo(
-    () =>
-      [
-        {
-          label: '刷新',
-          key: OperationType.REFRESH,
-        },
-        keepAliveTabs.length <= 1
-          ? null
-          : {
-              label: '关闭',
-              key: OperationType.CLOSE,
-            },
-        keepAliveTabs.length <= 1
-          ? null
-          : {
-              label: '关闭其他',
-              key: OperationType.CLOSEOTHER,
-            },
-      ].filter((o) => o),
-    [keepAliveTabs],
-  );
+  // const menuItems: MenuItemType[] = useMemo(
+  //   () =>
+  //     [
+  //       {
+  //         label: '刷新',
+  //         key: OperationType.REFRESH,
+  //       },
+  //       keepAliveTabs.length <= 1
+  //         ? null
+  //         : {
+  //             label: '关闭',
+  //             key: OperationType.CLOSE,
+  //           },
+  //       keepAliveTabs.length <= 1
+  //         ? null
+  //         : {
+  //             label: '关闭其他',
+  //             key: OperationType.CLOSEOTHER,
+  //           },
+  //     ].filter((o) => o),
+  //   [keepAliveTabs],
+  // );
 
-  const menuClick = useCallback(
-    ({ key, domEvent }: MenuInfo, tab: KeepAliveTab) => {
-      domEvent.stopPropagation();
+  // const menuClick = useCallback(
+  //   ({ key, domEvent }: MenuInfo, tab: KeepAliveTab) => {
+  //     domEvent.stopPropagation();
 
-      if (key === OperationType.REFRESH) {
-        refreshTab(tab.routePath);
-      } else if (key === OperationType.CLOSE) {
-        closeTab(tab.routePath);
-      } else if (key === OperationType.CLOSEOTHER) {
-        closeOtherTab(tab.routePath);
-      }
-    },
-    [closeOtherTab, closeTab, refreshTab],
-  );
+  //     if (key === OperationType.REFRESH) {
+  //       refreshTab(tab.routePath);
+  //     } else if (key === OperationType.CLOSE) {
+  //       closeTab(tab.routePath);
+  //     } else if (key === OperationType.CLOSEOTHER) {
+  //       closeOtherTab(tab.routePath);
+  //     }
+  //   },
+  //   [closeOtherTab, closeTab, refreshTab],
+  // );
 
-  const renderTabTitle = useCallback(
-    (tab: KeepAliveTab) => {
-      return (
-        <Dropdown
-          menu={{ items: menuItems, onClick: (e) => menuClick(e, tab) }}
-          trigger={['contextMenu']}
-        >
-          <div style={{ margin: '-12px 0', padding: '12px 0' }}>
-            {tab.icon}
-            {tab.title}
-          </div>
-        </Dropdown>
-      );
-    },
-    [menuItems],
-  );
+  // const renderTabTitle = useCallback(
+  //   (tab: KeepAliveTab) => {
+  //     return (
+  //       <Dropdown
+  //         menu={{ items: menuItems, onClick: (e) => menuClick(e, tab) }}
+  //         trigger={['contextMenu']}
+  //       >
+  //         <div style={{ margin: '-12px 0', padding: '12px 0' }}>
+  //           {tab.icon}
+  //           {tab.title}
+  //         </div>
+  //       </Dropdown>
+  //     );
+  //   },
+  //   [menuItems],
+  // );
 
-  const keepAliveContextValue = useMemo(
-    () => ({
-      closeTab,
-      closeOtherTab,
-      refreshTab,
-      onHidden,
-      onShow,
-      breadcrumbNameMap,
-    }),
-    [closeTab, closeOtherTab, refreshTab, onHidden, onShow, breadcrumbNameMap],
-  );
+  // const keepAliveContextValue = useMemo(
+  //   () => ({
+  //     closeTab,
+  //     closeOtherTab,
+  //     refreshTab,
+  //     onHidden,
+  //     onShow,
+  //     breadcrumbNameMap,
+  //   }),
+  //   [closeTab, closeOtherTab, refreshTab, onHidden, onShow, breadcrumbNameMap],
+  // );
 
-  const tabItems = useMemo(() => {
-    return keepAliveTabs.map((tab: KeepAliveTab) => {
-      return {
-        key: tab.routePath,
-        label: renderTabTitle(tab),
-        children: (
-          <div
-            key={tab.key}
-            style={{ height: 'calc(100vh - 112px)', overflow: 'auto' }}
-          >
-            {React.cloneElement(tab.children, {
-              keepAliveHandle: keepAliveContextValue,
-            })}
-          </div>
-        ),
-        closable: keepAliveTabs.length > 1,
-      };
-    });
-  }, [keepAliveTabs, keepAliveContextValue]);
+  // const tabItems = useMemo(() => {
+  //   return keepAliveTabs.map((tab: KeepAliveTab) => {
+  //     return {
+  //       key: tab.routePath,
+  //       label: renderTabTitle(tab),
+  //       children: (
+  //         <div
+  //           key={tab.key}
+  //           style={{ height: 'calc(100vh - 112px)', overflow: 'auto' }}
+  //         >
+  //           {React.cloneElement(tab.children, {
+  //             keepAliveHandle: keepAliveContextValue,
+  //           })}
+  //         </div>
+  //       ),
+  //       closable: keepAliveTabs.length > 1,
+  //     };
+  //   });
+  // }, [keepAliveTabs, keepAliveContextValue]);
 
   const items2 = useMemo(() => {
     return [{ ...menu }]
@@ -250,25 +265,31 @@ const App: React.FC<BasicLayoutProps> = (props) => {
     }
   };
 
-  const onTabsChange = useCallback(
-    (tabRoutePath: string) => {
-      const curTab = keepAliveTabs.find(
-        (tab: KeepAliveTab) => tab.routePath === tabRoutePath,
-      );
-      if (curTab) {
-        history.push(curTab?.pathname);
-      }
-    },
-    [keepAliveTabs],
-  );
+  // const onTabsChange = useCallback(
+  //   (tabRoutePath: string) => {
+  //     const curTab = keepAliveTabs.find(
+  //       (tab: KeepAliveTab) => tab.routePath === tabRoutePath,
+  //     );
+  //     if (curTab) {
+  //       history.push(curTab?.pathname);
+  //     }
+  //   },
+  //   [keepAliveTabs],
+  // );
 
-  const onTabEdit = (
-    targetKey: React.MouseEvent | React.KeyboardEvent | string,
-    action: 'add' | 'remove',
-  ) => {
-    if (action === 'remove') {
-      closeTab(targetKey as string);
-    }
+  // const onTabEdit = (
+  //   targetKey: React.MouseEvent | React.KeyboardEvent | string,
+  //   action: 'add' | 'remove',
+  // ) => {
+  //   if (action === 'remove') {
+  //     closeTab(targetKey as string);
+  //   }
+  // };
+
+  const TagsNavProps = {
+    breadcrumbNameMap: breadcrumbNameMap,
+    menuList: menuList,
+    location,
   };
 
   return (
@@ -289,7 +310,9 @@ const App: React.FC<BasicLayoutProps> = (props) => {
         >
           <Sider theme="light" width={200} className="site-layout-background">
             <Switch
-              onChange={(value) => setMode(value ? 'vertical' : 'inline')}
+              onChange={(value) => {
+                microSetMasterState({a: value})
+                setMode(value ? 'vertical' : 'inline')}}
             />
             Change Mode
             <Menu
@@ -303,7 +326,15 @@ const App: React.FC<BasicLayoutProps> = (props) => {
           </Sider>
           <Layout className="site-layout-background">
             <Content style={{ padding: '0 24px', minHeight: 280 }}>
-              <KeepAliveTabContext.Provider value={keepAliveContextValue}>
+            {!_.isEmpty(breadcrumbNameMap) ? (
+                  <TagsNav {...TagsNavProps}>
+                    {children}
+                  </TagsNav>
+                ) : (
+                  <Spin spinning={true} size="large" className={styles.spinning} tip="加载中..." />
+                )}
+              {/* <TagsNav {...TagsNavProps}>{children}</TagsNav> */}
+              {/* <KeepAliveTabContext.Provider value={keepAliveContextValue}>
                 <Tabs
                   activeKey={activeTabRoutePath}
                   onChange={onTabsChange}
@@ -322,7 +353,7 @@ const App: React.FC<BasicLayoutProps> = (props) => {
                     </TabPane>
                   ))}
                 </Tabs>
-              </KeepAliveTabContext.Provider>
+              </KeepAliveTabContext.Provider> */}
             </Content>
           </Layout>
         </Layout>

@@ -4,8 +4,8 @@ import { Modal } from 'antd';
 
 export default function List1(props: any) {
   useEffect(() => {
-    console.log('props', props);
-  }, []);
+    console.log('props', props, window.history.state);
+  }, [props]);
   // useEffect(() => {
   //   const init = () => {
   //     const ModalRef = Modal.info({

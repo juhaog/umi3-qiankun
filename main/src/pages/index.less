@@ -1,3 +1,75 @@
 .title {
   background: rgb(121, 242, 157);
 }
+
+.content {
+  height: 0;
+  position: relative;
+  padding-bottom: 45%;
+  .img {
+    position: absolute;
+    background-color: aqua;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.textContainer {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  text-overflow: ellipsis;
+  word-break: break-all;
+  line-height: 1.5;
+  font-size: 14px;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+.adaptive-container {
+  position: relative;
+  overflow: hidden; /* 确保按钮位置正确 */
+}
+
+.text-content {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  line-height: 1.5; /* 明确设置行高以便计算 */
+}
+
+.toggle-btn {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  display: none;
+  background: #fff;
+  border: none;
+  color: #007bff;
+  cursor: pointer;
+  padding-left: 8px;
+}
+
+/* 可选渐变遮罩 */
+.adaptive-container::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 60px;
+  height: 1.2em;
+  background: linear-gradient(to right, transparent, white 50%);
+  display: none;
+}
+
+.adaptive-container.truncated::after {
+  display: block;
+}

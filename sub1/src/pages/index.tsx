@@ -1,7 +1,8 @@
 import { Input, Button } from 'antd';
 import styles from './index.less';
 import { useEffect } from 'react';
-import history from '@/utils/history';
+import history from '@/utils/newHistory';
+// import history from '@/utils/history';
 export default function IndexPage() {
   useEffect(() => {
     // console.log('window', window, window.__POWERED_BY_QIANKUN__, window.__INJECTED_PUBLIC_PATH_BY_QIANKUN__, window.__webpack_public_path__);
